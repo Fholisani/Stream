@@ -2,6 +2,7 @@ package com.video.stream.controller;
 
 import java.awt.PageAttributes.MediaType;
 
+import com.video.stream.config.VideoConfigurations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class VideoController {
 
 	@Autowired
 	private VideoService videoService;
+	@Autowired
+	private VideoConfigurations configuration;
 	
 	@RequestMapping(value="/upload", method= RequestMethod.POST, consumes = { "multipart/form-data" })
 	public ResponseEntity<MediaData> uploadFile(@RequestPart("mediadata") MediaData mediadata,
@@ -32,7 +35,24 @@ public class VideoController {
 		String fileName ;
 		 try {
 			 System.out.println(mediadata.toString());
-			 fileName= videoService.storeFile(file);
+			 boolean isAllowed = false;
+			 logger.info("Allowed content type : " +configuration.getAllowedmimetypes().toString());
+			 for(String allowedMimeType : configuration.getAllowedmimetypes()){
+				 logger.info("Mime type  - "+ allowedMimeType + " - Compare : "+ file.getContentType() );
+			 	if(allowedMimeType.equalsIgnoreCase(file.getContentType())){
+			 		isAllowed = true;
+			 		break;
+				}
+
+			 }
+			 if(isAllowed){
+				 fileName= videoService.storeFile(file);
+				 logger.info("Successfully saved the file - "+ fileName);
+			 }else{
+				 return new ResponseEntity<MediaData>(mediadata,HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+
+			 }
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			throw new Exception("Video upload : " + e);
