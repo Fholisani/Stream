@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class VideoConfigurations {
 
 	private String uploaddir;
+	private String[] allowedmimetypes;
 
 	public String getUploaddir() {
 		return uploaddir;
@@ -17,5 +18,12 @@ public class VideoConfigurations {
 		this.uploaddir = uploaddir;
 	}
 
+	public String[] getAllowedmimetypes() {
+		return allowedmimetypes;
+	}
 
+	public void setAllowedmimetypes(String[] allowedmimetypes) {
+		this.allowedmimetypes = allowedmimetypes;
+	}
 }
+
