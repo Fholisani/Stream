@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="ISO-8859-1">
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Upload file test</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+</head>
+<body>
+
+	<form name="mediaDataForm" class="col-lg-6 offset-lg-3 " id="myForm">
+		<div class="row justify-content-center">
+			<div class="form-group">
+				<label for="mediaId"> File : </label> <br /> <input name="file"
+					type="file"><br /> <label for="mediaId"> Media Id
+					: </label> <br /> <input id="mediaId" name="mediaId" /><br /> <label
+					for="tittle"> Tittle : </label> <br /> <input id="tittle"
+					name="tittle" /><br /> <input type="button"
+					class="btn btn-primary" value="Submit" id="submit"
+					onclick="onSubmit(); return false;" />
+			</div>
+		</div>
+	</form>
+
+	<script>
+			function onSubmit(){
+				var form = document.getElementById("myForm");
+				
+				var formData = new FormData();
+				
+		
+				formData.append("file", document.forms["mediaDataForm"].file.files[0]);
+				formData.append('mediadata', new Blob([JSON.stringify({
+				                "mediaId": document.getElementById("mediaId").value,
+				                "tittle": document.getElementById("tittle").value                    
+				            })], {
+				                type: "application/json"
+				            }));
+				
+				fetch('http://localhost:8084/api/upload/', {
+					method: 'post',
+					body: formData
+				}).then(function(response){
+					
+					 if (response.status !== 200) {  
+						alert("There was an error!");
+					 } else {
+						alert("Request successful");
+					 }
+					 form.reset();
+				}).catch(function(err) {
+					form.reset();
+					alert("There was an error!");
+				});;
+			}
+		</script>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"></script>
+</body>
+</html>
