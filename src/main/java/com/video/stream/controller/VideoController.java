@@ -10,9 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.video.stream.model.MediaData;
 import com.video.stream.service.VideoService;
 
 @RestController
@@ -23,10 +25,12 @@ public class VideoController {
 	@Autowired
 	private VideoService videoService;
 	
-	@RequestMapping(value="/upload", method= RequestMethod.POST)
-	public ResponseEntity<Object> uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
+	@RequestMapping(value="/upload", method= RequestMethod.POST,  consumes = {"multipart/form-data"})
+	public ResponseEntity<Object> uploadFile(@RequestPart("mediadata")  MediaData mediadata,
+			@RequestPart("file") MultipartFile file) throws Exception {
 		String fileName ;
 		 try {
+			 System.out.println(mediadata.toString());
 			 fileName= videoService.storeFile(file);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
